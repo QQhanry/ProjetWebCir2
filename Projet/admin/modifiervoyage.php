@@ -1,9 +1,16 @@
-<?php
+<?php 
+
 include('php/database/request.php');
-$listevoyages = afficheVoyageValide();
+$listepays = affichepays();
+
+if (isset($_POST["reference"])) {
+  $voyage = afficheVoyage($_POST["reference"]);
+}
 
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +50,7 @@ $listevoyages = afficheVoyageValide();
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav text-uppercase ml-auto">
-               <li class="nav-item">
+             <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="Recherche.php">Recherche</a>
           </li>
           <li class="nav-item">
@@ -60,42 +67,61 @@ $listevoyages = afficheVoyageValide();
       </div>
     </div>
   </nav>
- <!-- Header -->
-  <header class="masthead">
-    <div class="container">
-      <div class="intro-text">
-        <div class="intro-lead-in">Inscriptions validées!</div>
-      </div>
-        <table  id="tab">
-            <tr>
-                <th>Date de départ</th>
-                <th>Date de retour</th>
-                <th>Montant</th>
-                <th>Adresse mail</th>
-                <th>Référence</th>
-            </tr>
-            <?php
 
-            foreach ($listevoyages as $key => $value) {
-                //echo $value['libelle'];
-                $_SESSION['reference'] = $value["ref"];
-                $voy = "<tr>";
-                $voy = $voy."<td>".$value["date_depart"]."</td>";
-                $voy = $voy."<td>".$value["date_retour"]."</td>";
-                $voy = $voy."<td>".$value["cout"]."</td>";
-                $voy = $voy."<td>".$value["mail"]."</td>";
-                $voy = $voy."<td>".$value["ref"]."</td>";
-                $voy = $voy."</tr>";
-                echo $voy;
+      <!-- Formulaire pour modifier un voyage -->
+        <form method="post" action="gestiondevoyage.php" id="modifiervoyage">
+          <div class="container">  
+            <div class="row">
+               <div class="col-lg-12 text-center">
+                <h2 class="section-heading text-uppercase" id="title_modif">Modifier un voyage</h2>
+              </div><br>
+              <div class="coordonnées" id="modifcoor">
+              <h6>Libellé</h6>
+                <div class="form-group">
+                  <input class="form-control" id="libelle" name="libelle" type="text" placeholder="Libellé *" value=<?php echo '"'.$voyage[0]['libelle'].'"'?> >
+                  <p class="help-block text-danger"></p>
+                </div>
+                <h6>Description</h6>
+                <div class="form-group">
+                  <textarea class="form-control" id="description" name="description" type="text" placeholder="Description *"  ><?php echo $voyage[0]['description'] ?></textarea>
+                  <p class="help-block text-danger"></p>
+                </div>
+                <h6>Durée</h6>
+                <div class="form-group">
+                  <input class="form-control" id="duree" name="duree" type="number" min="0" placeholder="Durée *" value=<?php echo "'".$voyage[0]['duree']."'"?>  >
+                  <p class="help-block text-danger"></p>
+                </div>
+                <h6>Coût</h6>
+                <div class="form-group">
+                  <input class="form-control" id="cout" name="cout" type="number" step="0.01" placeholder="Coût *" value=<?php echo "'".$voyage[0]['cout']."'"?>  >
+                  <p class="help-block text-danger"></p>
+                </div>
+                <h6>Pays</h6>
+                <select name="code_pays">
+                  <?php
+                  $pays = affichePays($voyage[0]['code_pays']);
+                  echo "<option value ='".$voyage[0]['code_pays']."'>".$pays[0]['nom_pays']."</option>";
+                  foreach ($listepays as $key => $value) {
+                  echo "<option value='".$value[0]."'>".$value[1]."</option>";
+                  }
+                   ?>
+                </select><br>
+                 <div class="col-lg-12 text-center">
+                <div id="validermodif"></div>
+                <input type="hidden" name="reference" value=<?php echo "'".$voyage[0]['ref']."'"?>>
+                <input type="hidden" name="modifvoyage" value="true">
+                <button id="validateButton" class="btn btn-primary1 " type="submit">Valider</button>
+              </div>
 
-            }
+              </div>
+            </div>
+          </div>
+      </form>
 
-            ?>
-        </table>
-    </div>
-  </header> 
-  
-  <!-- Footer -->
+
+
+
+  <!-- Footer 
 
   <footer class="footer">
     <div class="container">
@@ -134,8 +160,7 @@ $listevoyages = afficheVoyageValide();
         </div>
       </div>
     </div>
-  </footer>
-
+  </footer>-->
   
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
@@ -151,6 +176,6 @@ $listevoyages = afficheVoyageValide();
   <!-- Custom scripts for this template -->
   <script src="js/agency.min.js"></script>
 
-</body>
 
-</html>
+  </body>
+  </html>

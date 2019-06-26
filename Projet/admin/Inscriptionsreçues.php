@@ -1,7 +1,7 @@
 <?php
 include('php/database/request.php');
 $listevoyages = afficheVoyageEnValidation();
-
+session_start();
 
 ?>
 <!DOCTYPE html>
@@ -72,21 +72,30 @@ $listevoyages = afficheVoyageEnValidation();
 
   <table  id="tab">
       <tr>
-          <th>Titre de voyage</th>
-          <th>CodePays</th>
+          <th>Date de départ</th>
+          <th>Date de retour</th>
+          <th>Montant</th>
+          <th>Adresse mail</th>
           <th>Référence</th>
+          <th>Validation</th>
       </tr>
       <?php
+
       foreach ($listevoyages as $key => $value) {
           //echo $value['libelle'];
+          $_SESSION['reference'] = $value["ref"];
           $voy = "<tr>";
-          $voy = $voy."<td>".$value['libelle']."</td>";
-          $voy = $voy."<td>".$value["code_pays"]."</td>";
+          $voy = $voy."<td>".$value["date_depart"]."</td>";
+          $voy = $voy."<td>".$value["date_retour"]."</td>";
+          $voy = $voy."<td>".$value["cout"]."</td>";
+          $voy = $voy."<td>".$value["mail"]."</td>";
           $voy = $voy."<td>".$value["ref"]."</td>";
+          $voy = $voy. "<td><form action='VoyageValide.php' method='post'><button class='btn btn-primary1' type='submit'>VALIDER</button></form><form action='VoyagePasValide.php' method='post'><button class='btn btn-primary1' type='submit'>SUPPRIMER</button></form></td>";
           $voy = $voy."</tr>";
           echo $voy;
 
       }
+
       ?>
   </table>
   <!-- Footer -->

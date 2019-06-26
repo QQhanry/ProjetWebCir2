@@ -7,7 +7,7 @@
 include('php/database/request.php');
 $listepays = affichepays();
 
-if(isset($_POST["libelle"])){
+if(isset($_POST["ajoutvoyage"])){
   $nouveauvoyage = new voyage();
 
   $nouveauvoyage->setLibelle($_POST['libelle'])  ;
@@ -20,9 +20,23 @@ if(isset($_POST["libelle"])){
   ajoutVoyage($nouveauvoyage);
 }
 
-if(isset($_POST["reference"])){
+if(isset($_POST["supprimevoyage"])){
   supprimeVoyage($_POST["reference"]);
 }
+
+if (isset($_POST["modifvoyage"])) {
+    $modifvoyage = new voyage();
+
+  $modifvoyage->setLibelle($_POST['libelle'])  ;
+  $modifvoyage->setDescription($_POST['description'])  ;
+  $modifvoyage->setDuree($_POST['duree']) ;
+  $modifvoyage->setCout($_POST['cout']) ;
+  $modifvoyage->setReference($_POST['reference']) ;
+  $modifvoyage->setCodePays($_POST['code_pays']);
+    
+    updateVoyage($modifvoyage);
+  }
+
 
  ?>
 
@@ -106,7 +120,7 @@ if(isset($_POST["reference"])){
                 </button>
               </div>
               <div class="modal-body">
-              <form action="php/processing/ajoutVoyage.php" method="post">
+              <form action="gestiondevoyage.php" method="post">
                 <h6>Libellé</h6>
                 <div class="form-group">
                   <input class="form-control" id="libelle" name="libelle" type="text" placeholder="Libellé *" >
@@ -127,9 +141,8 @@ if(isset($_POST["reference"])){
                   <input class="form-control" id="cout" name="cout" type="number" step="0.01" placeholder="Coût *" >
                   <p class="help-block text-danger"></p>
                 </div>
-                <h6>Référence</h6>
                 <div class="form-group">
-                  <input class="form-control" id="reference" name="reference" type="number"  placeholder="Référence *" >
+                  <input class="form-control" id="reference" name="reference" type="number"  placeholder="reference *" >
                   <p class="help-block text-danger"></p>
                 </div>
                 <h6>Pays</h6>
@@ -144,6 +157,7 @@ if(isset($_POST["reference"])){
                 
               </div>
               <div class="modal-footer">
+                <input type="hidden" name="ajoutvoyage" value="true">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                 <button type="submit" class="btn btn-primary1" >Valider</button>
               </div>
@@ -155,14 +169,14 @@ if(isset($_POST["reference"])){
   </div>
 
 
-  <div class="container" id="modifdevoyage">  
-    <div class="row">
+    <div class="container" id="modifdevoyage">  
+        <div class="row">
 
-        <br><button class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" type="button" data-toggle="modal" data-target="#modifModal">
-          Modifier un voyage
-        </button>
+            <br><button class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" type="button" data-toggle="modal" data-target="#modifModal">
+              Modifier un voyage
+            </button>
 
-        <!-- Modal -->
+      <!-- Modal pour la modification d'un voyage en précisant sa référence -->
         <div class="modal fade" id="modifModal" tabindex="-1" role="dialog" aria-labelledby="modifModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -172,57 +186,27 @@ if(isset($_POST["reference"])){
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
-                            <form action="gestiondevoyage.php" method="post">
-                <h6>Libellé</h6>
-                <div class="form-group">
-                  <input class="form-control" id="libelle" name="libelle" type="text" placeholder="Libellé *" >
-                  <p class="help-block text-danger"></p>
-                </div>
-                <h6>Description</h6>
-                <div class="form-group">
-                  <textarea class="form-control" id="description" name="description" type="text" placeholder="Description *"></textarea>
-                  <p class="help-block text-danger"></p>
-                </div>
-                <h6>Durée</h6>
-                <div class="form-group">
-                  <input class="form-control" id="duree" name="duree" type="number" min="0" placeholder="Durée *" >
-                  <p class="help-block text-danger"></p>
-                </div>
-                <h6>Coût</h6>
-                <div class="form-group">
-                  <input class="form-control" id="cout" name="cout" type="number" step="0.01" placeholder="Coût *" >
-                  <p class="help-block text-danger"></p>
-                </div>
-                <h6>Référence</h6>
-                <div class="form-group">
-                  <input class="form-control" id="reference" name="reference" type="number"  placeholder="Référence *" >
-                  <p class="help-block text-danger"></p>
-                </div>
-                <h6>Pays</h6>
-                <select name="code_pays">
-                  <?php
-                  foreach ($listepays as $key => $value) {
-                  echo "<option value='".$value[0]."'>".$value[1]."</option>";
-                  }
-                   ?>
-                  
-                </select>
-                
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                <button type="submit" class="btn btn-primary1" >Valider</button>
-              </div>
-              </form>
+              <form action="modifiervoyage.php" method="post">
+                <div class="modal-body">
+                    
+                        <h6>Référence</h6>
+                        <div class="form-group">
+                          <input class="form-control" id="reference" name="reference" type="text" placeholder="Référence *" >
+                          <p class="help-block text-danger"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <button  type="submit" class="btn btn-primary1  js-scroll-trigger">Modifier</button>
+                        </div>
+                    </form>
+                  </div>
               </div>
             </div>
           </div>
-        </div>
+        </div>    
       </div>
-    </div>
 
-  <div class="container" id="supprimdevoyage">
+  <div class="container" id="supprimervoyage">
       <div class="row">
           <button class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" type="button" data-toggle="modal" data-target="#supprimModal">
               Supprimer un voyage
@@ -238,19 +222,20 @@ if(isset($_POST["reference"])){
                               <span aria-hidden="true">&times;</span>
                           </button>
                       </div>
+                      <form action="gestiondevoyage.php" method="post">
                       <div class="modal-body">
-                          <form action="gestiondevoyage.php" method="post">
                               <h6>Référence</h6>
                               <div class="form-group">
-                                  <input class="form-control" id="reference" name="reference" type="number" placeholder="Référence *" >
+                                  <input class="form-control" id="reference" name="reference" type="text" placeholder="Référence *" >
                                   <p class="help-block text-danger"></p>
                               </div>
 
 
                       </div>
                       <div class="modal-footer">
+                          <input type="hidden" name="supprimevoyage" value="true">
                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                          <button type="submit" class="btn btn-primary1" >Supprimer</button>
+                          <button type="submit" class="btn btn-primary1" >Valider</button>
                       </div>
                       </form>
                   </div>
